@@ -1,43 +1,47 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace serialkiller
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
-        {
-            int age = 5;
-            int catchage=0;
+        public static void Main(string[] args)
+        {            
             Console.WriteLine("Hello World!");
             Cocktail cocktailTim = new();
             cocktailTim.Id = 1;
-            cocktailTim.Name = "Manhattan";
+            cocktailTim.Name = "Roberts";
             cocktailTim.Price = 15.25;
             cocktailTim.Rating = 4.8;
-
-            catchage = TestMethod(age);
+            
             WriteClasstoFile(cocktailTim);
 
-            int TestMethod(int dog)
-            {
-                dog++;
-                return dog;
-            }
+        } // end of main method
 
-            void WriteClasstoFile(Cocktail _cocktail)
-            {
-                string jsonString = JsonSerializer.Serialize(_cocktail);
-                string fileName = "./Data/APIData.txt";
-                using FileStream createStream = File.Create(fileName);
-                File.WriteAllText(fileName, jsonString);
-                //JsonSerializer.SerializeAsync(createStream, jsonString);
+        
 
-            }
+        public static void WriteClasstoFile(Cocktail _cocktail)
+        {
+            
+            string jsonString = JsonSerializer.Serialize(_cocktail);
+            jsonString = jsonString + "\n";
+            string dirName =  "./Data";
+            string fileName = dirName + "/APIData.txt";            
+
+            // Create Directory creates dir if it does not exists, otherwise it does nothing
+            Directory.CreateDirectory(dirName); 
+            
+            using FileStream APIDataFileStream = File.Open(fileName,FileMode.Append);
+
+            byte[] info = new UTF8Encoding(true).GetBytes(jsonString);
+            APIDataFileStream.Write(info, 0, info.Length);
+
         }
+
 
 
     }
